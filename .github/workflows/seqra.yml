@@ -1,0 +1,16 @@
+name: Seqra Analysis
+on:
+    workflow_dispatch
+
+jobs:
+  seqra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository
+        uses: actions/checkout@v4
+
+      - name: Run Seqra code analysis
+        uses: seqrateam/seqra-action@v1
+        with:
+          upload-sarif: 'true'
+          artifact-name: 'seqra.sarif'
