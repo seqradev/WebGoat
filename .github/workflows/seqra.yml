@@ -1,4 +1,4 @@
-name: Seqra Analysis
+name: Scan project with Seqra
 on:
     workflow_dispatch
 
