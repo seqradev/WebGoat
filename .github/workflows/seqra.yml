@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Seqra code analysis
-        uses: seqra/seqra-action@v1
+        uses: seqra/seqra-action@v2
         with:
           upload-sarif: 'true'
           artifact-name: 'seqra.sarif'
