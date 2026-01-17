@@ -14,3 +14,4 @@ jobs:
         with:
           upload-sarif: 'true'
           artifact-name: 'seqra.sarif'
+          verbosity: 'debug'
