@@ -1,0 +1,24 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2017 WebGoat authors
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+package org.owasp.webgoat.lessons.sqlinjection.introduction
+
+import org.hamcrest.CoreMatchers.`is`
+import org.junit.jupiter.api.Test
+import org.owasp.webgoat.container.plugins.LessonTest
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
+class SqlInjectionLesson2Test : LessonTest() {
+    @Test
+    fun solution() {
+        mockMvc
+            .perform(
+                post("/SqlInjection/attack2")
+                    .param("query", "SELECT department FROM employees WHERE userid=96134;"),
+            ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.lessonCompleted", `is`(true)))
+    }
+}

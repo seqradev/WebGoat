@@ -13,3 +13,27 @@ ij_formatter_off_tag = @formatter:off
 ij_formatter_on_tag = @formatter:on
 ij_formatter_tags_enabled = false
 ij_java_names_count_to_use_import_on_demand = 999
+
+# Kotlin specific settings
+[*.{kt,kts}]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ij_kotlin_name_count_to_use_star_import = 999
+ij_kotlin_name_count_to_use_star_import_for_members = 999
+ij_kotlin_packages_to_use_import_on_demand = unset
+ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**,^
+
+# ktlint configuration
+ktlint_code_style = ktlint_official
+ktlint_standard_no-wildcard-imports = enabled
+ktlint_standard_trailing-comma-on-call-site = enabled
+ktlint_standard_trailing-comma-on-declaration-site = enabled
+
+# Gradle Kotlin DSL
+[*.gradle.kts]
+indent_size = 4
+indent_style = space

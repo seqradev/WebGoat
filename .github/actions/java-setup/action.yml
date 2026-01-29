@@ -1,20 +1,29 @@
 name: setup-java
-description: "Install Temurin JDK and export JAVA_VERSION"
+description: "Install Temurin JDK 21 (for Gradle) and JDK 25 (for Java compilation via toolchain)"
 inputs:
   cache:
-    description: "Cache mode for actions/setup-java"
+    description: "Cache mode for actions/setup-java (gradle or maven)"
     required: false
-    default: "maven"
+    default: "gradle"
 runs:
   using: "composite"
   steps:
     - name: Export JAVA_VERSION
       shell: bash
-      run: echo "JAVA_VERSION=25" >> "$GITHUB_ENV"
-    - name: Set up Temurin Java 25
+      run: echo "JAVA_VERSION=21" >> "$GITHUB_ENV"
+    # JDK 25 is required for Java compilation via Gradle toolchain
+    - name: Set up Temurin Java 25 (for Java toolchain)
       uses: actions/setup-java@v5
       with:
         distribution: temurin
         java-version: '25'
+        architecture: x64
+        cache: ''
+    # JDK 21 is required for Gradle/Kotlin execution (Kotlin 2.1 has a bug parsing Java 25 version)
+    - name: Set up Temurin Java 21 (for Gradle execution)
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: '21'
         architecture: x64
         cache: ${{ inputs.cache }}

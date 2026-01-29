@@ -61,3 +61,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.gradle
+build
+.kotlin/errors
+.kotlin/sessions

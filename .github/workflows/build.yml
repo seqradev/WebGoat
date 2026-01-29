@@ -43,6 +43,10 @@ jobs:
             -   name: Set up JDK
                 uses: ./.github/actions/java-setup
                 with:
-                    cache: 'maven'
-            -   name: Build with Maven
-                run: mvn --no-transfer-progress verify
+                    cache: 'gradle'
+            -   name: Build with Gradle
+                run: ./gradlew build --no-daemon
+            -   name: Run Detekt
+                run: ./gradlew detekt --no-daemon
+            -   name: Run ktlint
+                run: ./gradlew ktlintCheck --no-daemon

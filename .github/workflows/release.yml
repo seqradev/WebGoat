@@ -18,24 +18,23 @@ jobs:
       - name: Set up JDK
         uses: ./.github/actions/java-setup
         with:
-          cache: 'maven'
+          cache: 'gradle'
 
       - name: "Set labels for ${{ github.ref }}"
         run: |
           echo "WEBGOAT_TAG_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
-          WEBGOAT_MAVEN_VERSION=${{ github.ref_name }}
-          echo "WEBGOAT_MAVEN_VERSION=${WEBGOAT_MAVEN_VERSION:1}" >> $GITHUB_ENV
-      - name: Build with Maven
+          WEBGOAT_VERSION=${{ github.ref_name }}
+          echo "WEBGOAT_VERSION=${WEBGOAT_VERSION:1}" >> $GITHUB_ENV
+      - name: Build with Gradle
         run: |
-          mvn --no-transfer-progress versions:set -DnewVersion=${{ env.WEBGOAT_MAVEN_VERSION }}
-          mvn --no-transfer-progress install -DskipTests
+          ./gradlew bootJar -Pversion=${{ env.WEBGOAT_VERSION }} --no-daemon
 
       - name: "Create release"
         uses: softprops/action-gh-release@v1
         with:
           draft: false
           files: |
-            target/webgoat-${{ env.WEBGOAT_MAVEN_VERSION }}.jar
+            build/libs/webgoat-${{ env.WEBGOAT_VERSION }}.jar
           body: |
            ## Version ${{ github.ref_name }}
 
@@ -89,7 +88,7 @@ jobs:
             webgoat/webgoat:${{ env.WEBGOAT_TAG_VERSION }}
             webgoat/webgoat:latest
           build-args: |
-            webgoat_version=${{ env.WEBGOAT_MAVEN_VERSION }}
+            webgoat_version=${{ env.WEBGOAT_VERSION }}
 
       - name: "Build and push WebGoat desktop"
         uses: docker/build-push-action@v6.18.0
@@ -102,7 +101,7 @@ jobs:
             webgoat/webgoat-desktop:${{ env.WEBGOAT_TAG_VERSION }}
             webgoat/webgoat-desktop:latest
           build-args: |
-            webgoat_version=${{ env.WEBGOAT_MAVEN_VERSION }}
+            webgoat_version=${{ env.WEBGOAT_VERSION }}
   new_version:
     if: github.repository == 'WebGoat/WebGoat'
     name: Update to next SNAPSHOT version
@@ -120,7 +119,17 @@ jobs:
 
       - name: Set version to next snapshot
         run: |
-          mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}-SNAPSHOT versions:commit
+          # Extract current version from build.gradle.kts
+          CURRENT_VERSION=$(grep -oP 'version = "\K[^"]+' build.gradle.kts)
+          # Parse major.minor from version like "2025.4-SNAPSHOT" or "2025.4"
+          MAJOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f1)
+          MINOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f2 | cut -d'-' -f1)
+          # Increment minor version
+          NEXT_MINOR=$((MINOR + 1))
+          NEXT_VERSION="${MAJOR}.${NEXT_MINOR}-SNAPSHOT"
+          # Update build.gradle.kts
+          sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEXT_VERSION\"/" build.gradle.kts
+          echo "Updated version from $CURRENT_VERSION to $NEXT_VERSION"
 
       - name: Push the changes to new branch
         uses: devops-infra/action-commit-push@v0.11.4

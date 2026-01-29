@@ -114,24 +114,17 @@ Now let's start by compiling the project.
 ```Shell
 cd WebGoat
 git checkout <<branch_name>>
-# On Linux/Mac:
-./mvnw clean install
+# On Linux/Mac/Windows:
+./gradlew build
 
-# On Windows:
-./mvnw.cmd clean install
-
-# Using docker or podman, you can than build the container locally
+# Using docker or podman, you can then build the container locally
 docker build -f Dockerfile . -t webgoat/webgoat
 ```
 
 Now we are ready to run the project. WebGoat is using Spring Boot.
 
 ```Shell
-# On Linux/Mac:
-./mvnw spring-boot:run
-# On Windows:
-./mvnw.cmd spring-boot:run
-
+./gradlew bootRun
 ```
 
 ... you should be running WebGoat on http://localhost:8080/WebGoat momentarily.
@@ -154,7 +147,7 @@ For instance running as a jar on a Linux/macOS it will look like this:
 export TZ=Europe/Amsterdam # or your timezone
 export EXCLUDE_CATEGORIES="CLIENT_SIDE,GENERAL,CHALLENGE"
 export EXCLUDE_LESSONS="SqlInjectionAdvanced,SqlInjectionMitigations"
-java -jar target/webgoat-2023.8-SNAPSHOT.jar
+java -jar build/libs/webgoat-2023.8-SNAPSHOT.jar
 ```
 
 Or in a docker run it would (once this version is pushed into docker hub) look like this:
